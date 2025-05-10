@@ -1,0 +1,15 @@
+{
+  "name": "schemalose_datenbanken_fn",
+  "version": "1.0.0",
+  "description": "Dieses Verzeichnis enthält den Quellcode für das Frontend der Webanwendung, die im Rahmen meines Hochschulprojekts zur Session-Verwaltung entwickelt wird. Das Frontend dient als Benutzeroberfläche, über die Interaktionen stattfinden, die den Zustand der Benutzer-Sessions beeinflussen und die durch die Backend-Logik (unter Verwendung von Memcached und Oracle 23ai) verwaltet werden.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "vue": "^3.5.13"
+  }
+}
