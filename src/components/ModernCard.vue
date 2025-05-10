@@ -17,7 +17,7 @@
     /* Optional: */
     /* border: 1px solid transparent; /* Verhindert Layout-Verschiebungen bei Hover */
     /* transition: box-shadow 0.3s ease-in-out; /* Sanfte Schattenanimation bei Interaktion */
-    border: 1px solid red;
+    
   }
   
   </style>
