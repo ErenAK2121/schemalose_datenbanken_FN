@@ -1,6 +1,6 @@
 <template>
-  <ModernCard>
-    <div class="register-container">
+  <div class="register-container">
+    <ModernCard>
       <h1>Registrieren</h1>
       <form @submit.prevent="register">
         <div class="form-group">
@@ -19,125 +19,129 @@
           {{ registrationSuccess }}
         </p>
       </form>
-    </div>
-  </ModernCard>
+    </ModernCard>
+  </div>
 </template>
 
-<script>
-
+<script setup lang="ts">
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 import ModernCard from "@/components/ModernCard.vue";
 
-export default {
-  name: "RegisterView",
-  setup() {
-    const username = ref("");
-    const password = ref("");
-    const registrationError = ref("");
-    const registrationSuccess = ref("");
+import { useAuthStore } from "@/stores/auth/useAuthStore";
 
-    const register = async () => {
-      registrationError.value = "";
-      registrationSuccess.value = "";
+const router = useRouter();
+const authStore = useAuthStore();
 
+const username = ref("");
+const email = ref("");
+const password = ref("");
+const confirmPassword = ref("");
+const registrationError = ref("");
+const registrationSuccess = ref("");
 
-      // Hier könntest du deine API-Anfrage zum Registrieren implementieren
-      // Zum Beispiel mit fetch oder Axios:
-      try {
-        const response = await fetch("/api/register", {
-          // Passe die API-Route an
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            username: username.value,
-            password: password.value,
-          }),
-        });
+const register = async () => {
+  registrationError.value = "";
+  registrationSuccess.value = "";
 
-        const data = await response.json();
+  if (password.value !== confirmPassword.value) {
+    registrationError.value = "Die Passwörter stimmen nicht überein.";
+    return;
+  }
 
-        if (response.ok) {
-          registrationSuccess.value = "Registrierung erfolgreich!";
-          // Optional: Weiterleitung des Benutzers nach der Registrierung
-          // router.push('/login');
-        } else {
-          registrationError.value =
-            data.message || "Registrierung fehlgeschlagen.";
-        }
-      } catch (error) {
-        registrationError.value = "Es gab einen Fehler bei der Registrierung.";
-        console.error("Registrierungsfehler:", error);
-      }
-    };
+  try {
+    await authStore.register({
+      username: username.value,
+      email: email.value,
+      password: password.value
+    });
+    
+    registrationSuccess.value = "Registrierung erfolgreich!";
+    
+    // Kurze Verzögerung vor der Weiterleitung
+    setTimeout(() => {
+      router.push('/login');
+    }, 1500);
+    
+  } catch (error: any) {
+    registrationError.value = error.message || "Es gab einen Fehler bei der Registrierung.";
+    console.error("Registrierungsfehler:", error);
+  }
 
-    return {
-      username,
-      password,
-      confirmPassword,
-      registrationError,
-      registrationSuccess,
-      register,
-    };
-  },
 };
 </script>
 
 <style scoped>
 .register-container {
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   align-items: center;
+  min-height: 80vh;
   padding: 20px;
 }
 
 h1 {
-  margin-bottom: 20px;
+  margin-bottom: 24px;
+  font-size: 24px;
+  font-weight: 600;
+  text-align: center;
+  color: var(--color-heading);
 }
 
 .form-group {
-  margin-bottom: 15px;
-  width: 300px;
+  margin-bottom: 20px;
+  width: 100%;
 }
 
 label {
   display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
+  margin-bottom: 6px;
+  font-weight: 500;
 }
 
-input[type="text"],
-input[type="email"],
-input[type="password"] {
+input {
   width: 100%;
   padding: 10px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--color-border);
   border-radius: 4px;
-  box-sizing: border-box;
+  font-size: 16px;
+  transition: border-color 0.2s;
+}
+
+input:focus {
+  outline: none;
+  border-color: var(--color-border-hover);
 }
 
 .register-button {
-  padding: 10px 20px;
-  background-color: #007bff;
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  background-color: #4caf50;
   color: white;
   border: none;
   border-radius: 4px;
-  cursor: pointer;
   font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
 }
 
 .register-button:hover {
-  background-color: #0056b3;
+  background-color: #45a049;
 }
 
 .error-message {
-  color: red;
-  margin-top: 10px;
+  color: #f44336;
+  margin-top: 16px;
+  font-size: 14px;
+  text-align: center;
 }
 
 .success-message {
-  color: green;
-  margin-top: 10px;
+  color: #4caf50;
+  margin-top: 16px;
+  font-size: 14px;
+  text-align: center;
 }
 </style>
