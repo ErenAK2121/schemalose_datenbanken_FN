@@ -8,21 +8,8 @@
           <input type="text" id="username" v-model="username" required />
         </div>
         <div class="form-group">
-          <label for="email">E-Mail:</label>
-          <input type="email" id="email" v-model="email" required />
-        </div>
-        <div class="form-group">
           <label for="password">Passwort:</label>
           <input type="password" id="password" v-model="password" required />
-        </div>
-        <div class="form-group">
-          <label for="confirmPassword">Passwort bestätigen:</label>
-          <input
-            type="password"
-            id="confirmPassword"
-            v-model="confirmPassword"
-            required
-          />
         </div>
         <button type="submit" class="register-button">Registrieren</button>
         <p v-if="registrationError" class="error-message">
@@ -40,6 +27,7 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import ModernCard from "@/components/ModernCard.vue";
+
 import { useAuthStore } from "@/stores/auth/useAuthStore";
 
 const router = useRouter();
@@ -79,6 +67,7 @@ const register = async () => {
     registrationError.value = error.message || "Es gab einen Fehler bei der Registrierung.";
     console.error("Registrierungsfehler:", error);
   }
+
 };
 </script>
 
