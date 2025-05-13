@@ -1,4 +1,5 @@
 import { useAuthStore } from '../stores/auth/useAuthStore'
+
 export async function requireAuth(to: any, from: any, next: any) {
   const authStore = useAuthStore()
   
