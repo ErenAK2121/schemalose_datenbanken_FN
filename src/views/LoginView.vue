@@ -1,14 +1,55 @@
-<!-- filepath: /home/lthustensaft/Documents/studium/schemelose_datenbanken/projekt/schemalose_datenbanken_FN/src/views/LoginView.vue -->
-<script setup>
+<template>
+  <div class="login-container">
+    <ModernCard>
+      <h1>Anmeldung</h1>
+      <form @submit.prevent="login">
+        <div class="form-group">
+          <label for="username">Benutzername:</label>
+          <input 
+            type="text" 
+            id="username" 
+            v-model="username" 
+            placeholder="Benutzername"
+            required
+          />
+        </div>
+        
+        <div class="form-group">
+          <label for="password">Passwort:</label>
+          <input 
+            type="password" 
+            id="password" 
+            v-model="password"
+            placeholder="Passwort eingeben"
+            required
+          />
+        </div>
+        
+        <button type="submit" class="login-button">Einloggen</button>
+        
+        <p v-if="errorMessage" class="error-message">
+          {{ errorMessage }}
+        </p>
+        
+        <div class="register-link">
+          Noch kein Konto? 
+          <router-link to="/register">Jetzt registrieren</router-link>
+        </div>
+      </form>
+    </ModernCard>
+  </div>
+</template>
+
+<script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-// Muss noch erstellt werden
+import ModernCard from "@/components/ModernCard.vue"
 import { useAuthStore } from '@/stores/auth/useAuthStore'
 
 const router = useRouter()
 const authStore = useAuthStore()
 
-const email = ref('')
+const username = ref('')
 const password = ref('')
 const errorMessage = ref('')
 
@@ -16,59 +57,18 @@ const login = async () => {
   try {
     errorMessage.value = ''
     
-    if (!email.value || !password.value) {
+    if (!username.value || !password.value) {
       errorMessage.value = 'Bitte füllen Sie alle Felder aus.'
       return
     }
     
-    await authStore.login(email.value, password.value)
+    await authStore.login(username.value, password.value)
     router.push('/dashboard')
-  } catch (error) {
+  } catch (error: any) {
     errorMessage.value = error.message || 'Login fehlgeschlagen. Bitte überprüfen Sie Ihre Eingaben.'
   }
 }
 </script>
-
-<template>
-  <div class="login-container">
-    <div class="login-form">
-      <h1>Anmeldung</h1>
-      
-      <div class="form-group">
-        <label for="username">Benutzername</label>
-        <input 
-          type="username" 
-          id="username" 
-          v-model="username" 
-          placeholder="Benutzername"
-          required
-        />
-      </div>
-      
-      <div class="form-group">
-        <label for="password">Passwort</label>
-        <input 
-          type="password" 
-          id="password" 
-          v-model="password"
-          placeholder="Passwort eingeben"
-          required
-        />
-      </div>
-      
-      <div v-if="errorMessage" class="error-message">
-        {{ errorMessage }}
-      </div>
-      
-      <button @click="login" class="login-button">Einloggen</button>
-      
-      <div class="register-link">
-        Noch kein Konto? 
-        <router-link to="/register">Jetzt registrieren</router-link>
-      </div>
-    </div>
-  </div>
-</template>
 
 <style scoped>
 .login-container {
@@ -77,15 +77,6 @@ const login = async () => {
   align-items: center;
   min-height: 80vh;
   padding: 20px;
-}
-
-.login-form {
-  width: 100%;
-  max-width: 400px;
-  padding: 30px;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 h1 {
@@ -98,6 +89,7 @@ h1 {
 
 .form-group {
   margin-bottom: 20px;
+  width: 100%;
 }
 
 label {
@@ -140,7 +132,7 @@ input:focus {
 
 .error-message {
   color: #f44336;
-  margin-bottom: 16px;
+  margin-top: 16px;
   font-size: 14px;
   text-align: center;
 }
@@ -158,11 +150,5 @@ input:focus {
 
 .register-link a:hover {
   text-decoration: underline;
-}
-
-@media (prefers-color-scheme: dark) {
-  .login-form {
-    background-color: var(--color-background-soft);
-  }
 }
 </style>
