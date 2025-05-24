@@ -5,11 +5,19 @@
       <form @submit.prevent="register">
         <div class="form-group">
           <label for="username">Benutzername:</label>
-          <input type="text" id="username" v-model="username" required />
+          <input type="text" 
+          id="username" 
+          v-model="username" 
+          placeholder="Benutzername"
+          required />
         </div>
         <div class="form-group">
           <label for="password">Passwort:</label>
-          <input type="password" id="password" v-model="password" required />
+          <input type="password" 
+          id="password" 
+          v-model="password"
+          placeholder="Passwort eingeben"
+          required />
         </div>
         <button type="submit" class="register-button">Registrieren</button>
         <p v-if="registrationError" class="error-message">
@@ -18,6 +26,11 @@
         <p v-if="registrationSuccess" class="success-message">
           {{ registrationSuccess }}
         </p>
+
+        <div class="login-link">
+        Bereits registriert?
+        <router-link to="/login">Jetzt einloggen</router-link> 
+      </div>
       </form>
     </ModernCard>
   </div>
