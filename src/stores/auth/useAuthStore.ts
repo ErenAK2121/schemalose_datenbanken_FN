@@ -57,7 +57,7 @@ export const useAuthStore = defineStore('auth', () => {
     
     try {
       // Django REST API Endpunkt für Login
-      const response = await fetch('/api/auth/login/', {
+      const response = await fetch('10.20.110.65:8000/api/auth/login/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
