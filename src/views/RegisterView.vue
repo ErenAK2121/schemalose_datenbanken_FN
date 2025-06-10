@@ -47,9 +47,7 @@ const router = useRouter();
 const authStore = useAuthStore();
 
 const username = ref("");
-const email = ref("");
 const password = ref("");
-const confirmPassword = ref("");
 const registrationError = ref("");
 const registrationSuccess = ref("");
 
@@ -57,15 +55,10 @@ const register = async () => {
   registrationError.value = "";
   registrationSuccess.value = "";
 
-  if (password.value !== confirmPassword.value) {
-    registrationError.value = "Die Passwörter stimmen nicht überein.";
-    return;
-  }
 
   try {
     await authStore.register({
       username: username.value,
-      email: email.value,
       password: password.value
     });
     
