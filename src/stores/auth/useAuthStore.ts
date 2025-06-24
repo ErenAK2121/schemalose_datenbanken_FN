@@ -185,7 +185,7 @@ export const useAuthStore = defineStore('auth', () => {
   /**
    * Neuen Benutzer registrieren
    */
-  async function register(userData: {username: string, email: string, password: string}): Promise<void> {
+  async function register(userData: {username: string, password: string}): Promise<void> {
     loading.value = true
     
     try {
