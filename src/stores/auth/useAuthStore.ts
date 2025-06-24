@@ -52,17 +52,17 @@ export const useAuthStore = defineStore('auth', () => {
   /**
    * Benutzer mit E-Mail und Passwort anmelden
    */
-  async function login(email: string, password: string): Promise<void> {
+  async function login(username: string, password: string): Promise<void> {
     loading.value = true
     
     try {
       // Django REST API Endpunkt für Login
-      const response = await fetch('10.20.110.65:8000/api/auth/login/', {
+      const response = await fetch('http://10.20.110.65:8000/api/auth/login/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ username, password }),
       })
 
       if (!response.ok) {
@@ -98,7 +98,7 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       // Optional: Server-seitiges Logout bei Django
       if (token.value) {
-        await fetch('/api/auth/logout/', {
+        await fetch('http://10.20.110.65:8000/api/auth/logout/', {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${token.value}`,
@@ -119,7 +119,7 @@ export const useAuthStore = defineStore('auth', () => {
     if (!refreshToken.value) return false
     
     try {
-      const response = await fetch('/api/auth/token/refresh/', {
+      const response = await fetch('http://10.20.110.65:8000/api/auth/token/refresh/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ refresh: refreshToken.value }),
@@ -147,7 +147,7 @@ export const useAuthStore = defineStore('auth', () => {
     loading.value = true
     
     try {
-      const response = await fetch('/api/auth/user/', {
+      const response = await fetch('http://10.20.110.65:8000/api/auth/user/', {
         headers: {
           'Authorization': `Bearer ${token.value}`,
         },
@@ -189,7 +189,7 @@ export const useAuthStore = defineStore('auth', () => {
     loading.value = true
     
     try {
-      const response = await fetch('/api/auth/register/', {
+      const response = await fetch('http://10.20.110.65:8000/api/auth/register/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

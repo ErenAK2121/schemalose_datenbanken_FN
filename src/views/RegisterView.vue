@@ -1,23 +1,15 @@
 <template>
-  <div class="register-container">
-    <ModernCard>
+  <ModernCard>
+    <div class="register-container">
       <h1>Registrieren</h1>
       <form @submit.prevent="register">
         <div class="form-group">
           <label for="username">Benutzername:</label>
-          <input type="text" 
-          id="username" 
-          v-model="username" 
-          placeholder="Benutzername"
-          required />
+          <input type="text" id="username" v-model="username" required />
         </div>
         <div class="form-group">
           <label for="password">Passwort:</label>
-          <input type="password" 
-          id="password" 
-          v-model="password"
-          placeholder="Passwort eingeben"
-          required />
+          <input type="password" id="password" v-model="password" required />
         </div>
         <button type="submit" class="register-button">Registrieren</button>
         <p v-if="registrationError" class="error-message">
@@ -26,135 +18,125 @@
         <p v-if="registrationSuccess" class="success-message">
           {{ registrationSuccess }}
         </p>
-
-        <div class="login-link">
-        Bereits registriert?
-        <router-link to="/login">Jetzt einloggen</router-link> 
-      </div>
       </form>
-    </ModernCard>
-  </div>
+    </div>
+  </ModernCard>
 </template>
 
-<script setup lang="ts">
+<script>
+
 import { ref } from "vue";
-import { useRouter } from "vue-router";
 import ModernCard from "@/components/ModernCard.vue";
 
-import { useAuthStore } from "@/stores/auth/useAuthStore";
+export default {
+  name: "RegisterView",
+  setup() {
+    const username = ref("");
+    const password = ref("");
+    const registrationError = ref("");
+    const registrationSuccess = ref("");
 
-const router = useRouter();
-const authStore = useAuthStore();
+    const register = async () => {
+      registrationError.value = "";
+      registrationSuccess.value = "";
 
-const username = ref("");
-const email = ref("");
-const password = ref("");
-const confirmPassword = ref("");
-const registrationError = ref("");
-const registrationSuccess = ref("");
 
-const register = async () => {
-  registrationError.value = "";
-  registrationSuccess.value = "";
+      // Hier könntest du deine API-Anfrage zum Registrieren implementieren
+      // Zum Beispiel mit fetch oder Axios:
+      try {
+        const response = await fetch("http://10.20.110.65:8000/api/register", {
+          // Passe die API-Route an
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            username: username.value,
+            password: password.value,
+          }),
+        });
 
-  if (password.value !== confirmPassword.value) {
-    registrationError.value = "Die Passwörter stimmen nicht überein.";
-    return;
-  }
+        const data = await response.json();
 
-  try {
-    await authStore.register({
-      username: username.value,
-      email: email.value,
-      password: password.value
-    });
-    
-    registrationSuccess.value = "Registrierung erfolgreich!";
-    
-    // Kurze Verzögerung vor der Weiterleitung
-    setTimeout(() => {
-      router.push('/login');
-    }, 1500);
-    
-  } catch (error: any) {
-    registrationError.value = error.message || "Es gab einen Fehler bei der Registrierung.";
-    console.error("Registrierungsfehler:", error);
-  }
+        if (response.ok) {
+          registrationSuccess.value = "Registrierung erfolgreich!";
+          // Optional: Weiterleitung des Benutzers nach der Registrierung
+          // router.push('/login');
+        } else {
+          registrationError.value =
+            data.message || "Registrierung fehlgeschlagen.";
+        }
+      } catch (error) {
+        registrationError.value = "Es gab einen Fehler bei der Registrierung.";
+        console.error("Registrierungsfehler:", error);
+      }
+    };
 
+    return {
+      username,
+      password,
+      registrationError,
+      registrationSuccess,
+      register,
+    };
+  },
 };
 </script>
 
 <style scoped>
 .register-container {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  min-height: 80vh;
   padding: 20px;
 }
 
 h1 {
-  margin-bottom: 24px;
-  font-size: 24px;
-  font-weight: 600;
-  text-align: center;
-  color: var(--color-heading);
+  margin-bottom: 20px;
 }
 
 .form-group {
-  margin-bottom: 20px;
-  width: 100%;
+  margin-bottom: 15px;
+  width: 300px;
 }
 
 label {
   display: block;
-  margin-bottom: 6px;
-  font-weight: 500;
+  margin-bottom: 5px;
+  font-weight: bold;
 }
 
-input {
+input[type="text"],
+input[type="email"],
+input[type="password"] {
   width: 100%;
   padding: 10px;
-  border: 1px solid var(--color-border);
+  border: 1px solid #ccc;
   border-radius: 4px;
-  font-size: 16px;
-  transition: border-color 0.2s;
-}
-
-input:focus {
-  outline: none;
-  border-color: var(--color-border-hover);
+  box-sizing: border-box;
 }
 
 .register-button {
-  width: 100%;
-  padding: 12px;
-  margin-top: 10px;
-  background-color: #4caf50;
+  padding: 10px 20px;
+  background-color: #007bff;
   color: white;
   border: none;
   border-radius: 4px;
-  font-size: 16px;
-  font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.2s;
+  font-size: 16px;
 }
 
 .register-button:hover {
-  background-color: #45a049;
+  background-color: #0056b3;
 }
 
 .error-message {
-  color: #f44336;
-  margin-top: 16px;
-  font-size: 14px;
-  text-align: center;
+  color: red;
+  margin-top: 10px;
 }
 
 .success-message {
-  color: #4caf50;
-  margin-top: 16px;
-  font-size: 14px;
-  text-align: center;
+  color: green;
+  margin-top: 10px;
 }
 </style>
